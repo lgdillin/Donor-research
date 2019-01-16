@@ -3,15 +3,19 @@ import pygal
 import numpy as np
 import pandas as pd 
 
+from pandas import pivot_table
+
 donors = pd.read_csv('donors2016.csv')
 
-collect_donations = donors.groupby(['contbr_nm', 'contbr_city', 'contbr_st', 'contbr_employer'], as_index = False)['contb_receipt_amt'].sum()
-# print(pd.DataFrame(collect_donations))
+#collect_donations = donors.groupby(['contbr_nm', 'contbr_city', 'contbr_st', 'contbr_employer', 'contb_receipt_amt'], as_index = False)['contb_receipt_amt'].sum()
+
+cd = pivot_table(donors, values = ['contb_receipt_amt', 'total_donations'], index = ['contbr_nm', 'contbr_city', 'contbr_st', 'contbr_employer'],
+    aggfunc = {'total_donations': np.sum})
 
 # collect_donations = donors.groupby(['contbr_st'], as_index = False)['contb_receipt_amt'].sum()
-collect_donations = pd.DataFrame(collect_donations)
-collect_donations.to_csv('pivot.csv', columns = ['contbr_nm', 'contbr_city', 'contbr_st', 'contbr_employer', 'contb_receipt_amt'], index = False)
-print(collect_donations.head())
+#collect_donations = pd.DataFrame(collect_donations)
+#collect_donations.to_csv('pivot.csv', columns = ['contbr_nm', 'contbr_city', 'contbr_st', 'contbr_employer', 'contb_receipt_amt'], index = False)
+print(cd.head())
 # collect_donations.to_csv('pivot.csv',)
 
 # pie_chart = pygal.Pie()
